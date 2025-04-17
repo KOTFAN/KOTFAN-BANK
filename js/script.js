@@ -57,9 +57,6 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// LECTURES
 
 const currencies = new Map([
    ['USD', 'United States dollar'],
@@ -67,22 +64,50 @@ const currencies = new Map([
    ['GBP', 'Pound sterling'],
 ]);
 
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+const displayMovements = function (movmentsArr) {
 
-const displayMovements = function (mov) {
-
-   movements.forEach((mov, i) => {
+   movmentsArr.forEach((mov, i) => {
       let movType = mov > 0 ? 'deposit' : 'withdrawal'
 
 
       containerMovements.insertAdjacentHTML("afterbegin",
          `<div class="movements__row">
             <div class="movements__type movements__type--${movType}">${i + 1} deposit</div>
-            <div class="movements__value">${mov}€</div>
+            <div class="movements__value">${mov} $</div>
          </div>`)
    })
 }
 
-displayMovements(movements)
+
+const displayBalance = function (movements = []) {
+   const sum = movements.reduce((a, v) => a + v, 0)
+   labelBalance.textContent = `${sum} $`
+}
+
+const displayUserName = function (name = '') {
+   if (name.length && typeof name === 'string') {
+      return name[0].toUpperCase() + name.slice(1, name.length).toLowerCase()
+   }
+   return 'Invalid name'
+
+}
+
+const displayTotalIn = function (movements = []) {
+   labelSumIn.textContent = movements.filter((num) => num > 0).reduce((a, v) => a + v)
+}
+
+const displayTotalOut = function (movements = []) {
+   labelSumOut.textContent = Math.abs(movements.filter((num) => num < 0).reduce((a, v) => a + v))
+}
+
+const displayTotalInterest = function (movements = [], prosent = 100) {
+   labelSumInterest.textContent = movements.filter((num) => num > 0).map((mov) => mov * prosent / 100).reduce((a, v) => a + v)
+}
 
 /////////////////////////////////////////////////
+
+displayMovements(account1.movements)
+displayBalance(account1.movements)
+displayTotalIn(account1.movements)
+displayTotalOut(account1.movements)
+displayTotalInterest(account1.movements, account1.interestRate)
