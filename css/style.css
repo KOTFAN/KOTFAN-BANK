@@ -87,8 +87,13 @@ nav {
    grid-template-rows: auto repeat(3, 15rem) auto;
    gap: 2rem;
    opacity: 0;
+   visibility: hidden;
 
-   transition: all 1s;
+
+   /* transition: opacity 1s, visibility 1s; */
+
+
+   transition: opacity 1s;
 }
 
 .balance {

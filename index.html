@@ -21,10 +21,10 @@
       </a>
       <div class="login__box">
          <p class="welcome">Log or sign up</p>
-         <form class="login">
+         <form class="login" autocomplete="on">
             <input type="text" placeholder="user" class="login__input login__input--user" />
-            <!-- In practice, use type="password" -->
-            <input type="text" placeholder="PIN" maxlength="4" class="login__input login__input--pin" />
+
+            <input type="password" placeholder="PIN" maxlength="4" class="login__input login__input--pin" />
             <button class="login__btn">&rarr;</button>
          </form>
       </div>
@@ -67,7 +67,7 @@
       <!-- OPERATION: TRANSFERS -->
       <div class="operation operation--transfer">
          <h2>Transfer money</h2>
-         <form class="form form--transfer">
+         <form class="form form--transfer" autocomplete="off">
             <input type="text" class="form__input form__input--to" />
             <input type="number" class="form__input form__input--amount" />
             <button class="form__btn form__btn--transfer">&rarr;</button>
@@ -79,7 +79,7 @@
       <!-- OPERATION: LOAN -->
       <div class="operation operation--loan">
          <h2>Request loan</h2>
-         <form class="form form--loan">
+         <form class="form form--loan" autocomplete="off">
             <input type="number" class="form__input form__input--loan-amount" />
             <button class="form__btn form__btn--loan">&rarr;</button>
             <label class="form__label form__label--loan">Amount</label>
@@ -89,9 +89,14 @@
       <!-- OPERATION: CLOSE -->
       <div class="operation operation--close">
          <h2>Close account</h2>
-         <form class="form form--close">
-            <input type="text" class="form__input form__input--user" />
-            <input type="password" maxlength="6" class="form__input form__input--pin" />
+
+         <!-- fake inputs scam chrome -->
+         <input type="text" style="display:none">
+         <input type="password" style="display:none">
+
+         <form class="form form--close" autocomplete="off">
+            <input type="text" class="form__input form__input--user" autocomplete="off" />
+            <input type="password" maxlength="6" class="form__input form__input--pin" autocomplete="off" />
             <button class="form__btn form__btn--close">&rarr;</button>
             <label class="form__label">Confirm user</label>
             <label class="form__label">Confirm PIN</label>

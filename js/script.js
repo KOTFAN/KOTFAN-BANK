@@ -111,32 +111,36 @@ const displayTotalInterest = function (movements = [], prosent = 100) {
    labelSumInterest.textContent = movements.filter((num) => num > 0).map((mov) => mov * prosent / 100).reduce((a, v) => a + v)
 }
 
+//clear fields and remove coursor from field
+const clearFields = (...fields) => {
+   fields.forEach(field => {
+      field.value = ''
+      field.blur()
+   })
+}
+
+//show ui after login
 const displayUI = ({ owner }) => {
    containerApp.style.opacity = 1
-   const name = displayUserName(owner)
+   containerApp.style.visibility = 'visible';
 
 
    //show welcome to person
+   const name = displayUserName(owner)
    labelWelcome.textContent = `Welcome, ${name}`
 
-   //clear fields after loginisation
-   inputLoginUsername.value = inputLoginPin.value = ''
+   clearFields(inputLoginUsername, inputLoginPin)
 
-   //remove coursor from fields
-   inputLoginUsername.blur()
-   inputLoginPin.blur()
 
 
 }
-
-
+//hide ui after login
 const hideUI = () => {
    containerApp.style.opacity = 0;
    labelWelcome.textContent = 'Log or sign up'
+   containerApp.style.visibility = 'hidden';
 }
-
-
-
+//update ui after some action
 const updateUI = (currentUser) => {
    displayUI(currentUser)
    displayMovements(currentUser.movements)
@@ -158,19 +162,31 @@ const MoneyTransfering = (e) => {
    const sendTo = accounts.find((acc) => acc.userName === inputTransferTo.value)
    const sendAmong = Number(inputTransferAmount.value)
 
-
-
-
-
    if (currentUser.balance >= sendAmong && sendTo && sendAmong > 0 && currentUser !== sendTo) {
       currentUser.movements.push(-sendAmong)
       sendTo.movements.push(sendAmong)
+
+
       console.log("send " + sendAmong + ' to ' + sendTo.userName)
       updateUI(currentUser)
+      clearFields(inputTransferTo, inputTransferAmount)
    }
 
 }
 
+//deleteAccountHandler
+const deleteAccount = (e) => {
+   e.preventDefault();
+
+   if (inputCloseUsername.value === currentUser.userName && Number(inputClosePin.value) === currentUser.pin) {
+      const delIndex = accounts.findIndex((acc) => acc.userName === inputCloseUsername.value && acc.pin === Number(inputClosePin.value))
+      accounts.splice(delIndex, 1)
+
+      clearFields(inputCloseUsername, inputClosePin)
+      hideUI()
+   }
+
+}
 
 const login = (e) => {
    e.preventDefault();
@@ -178,16 +194,20 @@ const login = (e) => {
 
 
    hideUI()
-   btnTransfer.removeEventListener('click', MoneyTransfering)
 
+   //clear all eventListeners exept login
+   btnTransfer.removeEventListener('click', MoneyTransfering)
+   btnClose.removeEventListener('click', deleteAccount)
 
    if (currentUser) {
       //user is logined so do...
-
-      btnTransfer.addEventListener('click', MoneyTransfering)
-
-
       updateUI(currentUser)
+
+      //add event Listeners
+      btnTransfer.addEventListener('click', MoneyTransfering)
+      btnClose.addEventListener('click', deleteAccount)
+
+
 
 
    }
