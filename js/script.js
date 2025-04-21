@@ -6,6 +6,7 @@ const account1 = {
    movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
    interestRate: 1.2, // %
    pin: 1111,
+   userName: 'kotfan',
 };
 
 const account2 = {
@@ -13,6 +14,7 @@ const account2 = {
    movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
    interestRate: 1.5,
    pin: 2222,
+   userName: 'smd',
 };
 
 const account3 = {
@@ -20,6 +22,7 @@ const account3 = {
    movements: [200, -200, 340, -300, -20, 50, 400, -460],
    interestRate: 0.7,
    pin: 3333,
+   userName: 'moneyLover',
 };
 
 const account4 = {
@@ -27,6 +30,7 @@ const account4 = {
    movements: [430, 1000, 700, 50, 90],
    interestRate: 1,
    pin: 4444,
+   userName: 'springfild228',
 };
 
 const accounts = [account1, account2, account3, account4];
@@ -64,12 +68,12 @@ const currencies = new Map([
    ['GBP', 'Pound sterling'],
 ]);
 
-const displayMovements = function (movmentsArr) {
 
+//display money moments as list
+const displayMovements = function (movmentsArr) {
+   containerMovements.innerHTML = ''
    movmentsArr.forEach((mov, i) => {
       let movType = mov > 0 ? 'deposit' : 'withdrawal'
-
-
       containerMovements.insertAdjacentHTML("afterbegin",
          `<div class="movements__row">
             <div class="movements__type movements__type--${movType}">${i + 1} deposit</div>
@@ -86,7 +90,8 @@ const displayBalance = function (movements = []) {
 
 const displayUserName = function (name = '') {
    if (name.length && typeof name === 'string') {
-      return name[0].toUpperCase() + name.slice(1, name.length).toLowerCase()
+      const userFristName = name.split(' ')[0]
+      return userFristName[0].toUpperCase() + userFristName.slice(1).toLowerCase()
    }
    return 'Invalid name'
 
@@ -104,10 +109,62 @@ const displayTotalInterest = function (movements = [], prosent = 100) {
    labelSumInterest.textContent = movements.filter((num) => num > 0).map((mov) => mov * prosent / 100).reduce((a, v) => a + v)
 }
 
+const displayUI = ({ owner }) => {
+   containerApp.style.opacity = 1
+   const name = displayUserName(owner)
+
+
+   //show welcome to person
+   labelWelcome.textContent = `Welcome, ${name}`
+
+   //clear fields after loginisation
+   inputLoginUsername.value = inputLoginPin.value = ''
+
+   //remove coursor from fields
+   inputLoginUsername.blur()
+   inputLoginPin.blur()
+
+
+}
+
+
+const hideUI = () => {
+   containerApp.style.opacity = 0;
+   labelWelcome.textContent = 'Log or sign up'
+}
+
+
+
+
 /////////////////////////////////////////////////
 
-displayMovements(account1.movements)
-displayBalance(account1.movements)
-displayTotalIn(account1.movements)
-displayTotalOut(account1.movements)
-displayTotalInterest(account1.movements, account1.interestRate)
+
+btnLogin.addEventListener('click', (e) => {
+
+
+   e.preventDefault();
+   hideUI()
+
+   const user = accounts.find((acc) => acc.userName === inputLoginUsername.value && acc.pin === Number(inputLoginPin.value))
+
+
+   if (user) {
+      displayUI(user)
+
+
+      displayMovements(user.movements)
+      displayBalance(user.movements)
+      displayTotalIn(user.movements)
+      displayTotalOut(user.movements)
+      displayTotalInterest(user.movements, user.interestRate)
+
+
+
+   }
+
+
+
+
+
+})
+
