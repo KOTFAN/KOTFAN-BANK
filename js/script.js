@@ -68,6 +68,8 @@ const currencies = new Map([
    ['GBP', 'Pound sterling'],
 ]);
 
+let currentUser = undefined
+
 
 //display money moments as list
 const displayMovements = function (movmentsArr) {
@@ -83,9 +85,9 @@ const displayMovements = function (movmentsArr) {
 }
 
 
-const displayBalance = function (movements = []) {
-   const sum = movements.reduce((a, v) => a + v, 0)
-   labelBalance.textContent = `${sum} $`
+const displayAndCalculateBalance = function (acc) {
+   acc.balance = acc.movements.reduce((a, v) => a + v, 0)
+   labelBalance.textContent = `${acc.balance} $`
 }
 
 const displayUserName = function (name = '') {
@@ -135,36 +137,65 @@ const hideUI = () => {
 
 
 
+const updateUI = (currentUser) => {
+   displayUI(currentUser)
+   displayMovements(currentUser.movements)
 
-/////////////////////////////////////////////////
+   displayAndCalculateBalance(currentUser)
+
+   displayTotalIn(currentUser.movements)
+   displayTotalOut(currentUser.movements)
+   displayTotalInterest(currentUser.movements, currentUser.interestRate)
+}
 
 
-btnLogin.addEventListener('click', (e) => {
-
-
+//MoneyTransferingHendler
+const MoneyTransfering = (e) => {
    e.preventDefault();
+
+
+   //get values for transaction
+   const sendTo = accounts.find((acc) => acc.userName === inputTransferTo.value)
+   const sendAmong = Number(inputTransferAmount.value)
+
+
+
+
+
+   if (currentUser.balance >= sendAmong && sendTo && sendAmong > 0 && currentUser !== sendTo) {
+      currentUser.movements.push(-sendAmong)
+      sendTo.movements.push(sendAmong)
+      console.log("send " + sendAmong + ' to ' + sendTo.userName)
+      updateUI(currentUser)
+   }
+
+}
+
+
+const login = (e) => {
+   e.preventDefault();
+   currentUser = accounts.find((acc) => acc.userName === inputLoginUsername.value && acc.pin === Number(inputLoginPin.value))
+
+
    hideUI()
-
-   const user = accounts.find((acc) => acc.userName === inputLoginUsername.value && acc.pin === Number(inputLoginPin.value))
-
-
-   if (user) {
-      displayUI(user)
+   btnTransfer.removeEventListener('click', MoneyTransfering)
 
 
-      displayMovements(user.movements)
-      displayBalance(user.movements)
-      displayTotalIn(user.movements)
-      displayTotalOut(user.movements)
-      displayTotalInterest(user.movements, user.interestRate)
+   if (currentUser) {
+      //user is logined so do...
 
+      btnTransfer.addEventListener('click', MoneyTransfering)
+
+
+      updateUI(currentUser)
 
 
    }
 
+}
 
 
 
-
-})
-
+/////////////////////////////////////////////////
+//Loginisation
+btnLogin.addEventListener('click', login)
