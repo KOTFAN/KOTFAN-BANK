@@ -68,13 +68,17 @@ const currencies = new Map([
    ['GBP', 'Pound sterling'],
 ]);
 
-let currentUser = undefined
+let currentUser;
 
 
 //display money moments as list
-const displayMovements = function (movmentsArr) {
+const displayMovements = function (movmentsArr, isNeedToBeSort = false) {
+
+
+   const movements = isNeedToBeSort ? movmentsArr.slice().sort((a, b) => a - b) : movmentsArr
+
    containerMovements.innerHTML = ''
-   movmentsArr.forEach((mov, i) => {
+   movements.forEach((mov, i) => {
       const movType = mov > 0 ? 'deposit' : 'withdrawal'
       containerMovements.insertAdjacentHTML("afterbegin",
          `<div class="movements__row">
@@ -140,7 +144,7 @@ const hideUI = () => {
    labelWelcome.textContent = 'Log or sign up'
    containerApp.style.visibility = 'hidden';
 }
-//update ui after some action
+//update ui after some action of current user
 const updateUI = (currentUser) => {
    displayUI(currentUser)
    displayMovements(currentUser.movements)
@@ -199,18 +203,27 @@ const requestLoan = (e) => {
       clearFields(inputLoanAmount)
    }
 }
+//sortMovmentsHandler
+let isSortOn = true
+const sortMovments = (e) => {
+   e.preventDefault();
+
+   displayMovements(currentUser.movements, isSortOn)
+   isSortOn = !isSortOn
+
+}
 
 const login = (e) => {
    e.preventDefault();
    currentUser = accounts.find((acc) => acc.userName === inputLoginUsername.value && acc.pin === Number(inputLoginPin.value))
-
-
    hideUI()
+
 
    //clear all eventListeners exept login
    btnTransfer.removeEventListener('click', MoneyTransfering)
    btnClose.removeEventListener('click', deleteAccount)
    btnLoan.removeEventListener('click', requestLoan)
+   btnSort.removeEventListener('click', sortMovments)
 
    if (currentUser) {
       //user is logined so do...
@@ -220,6 +233,7 @@ const login = (e) => {
       btnTransfer.addEventListener('click', MoneyTransfering)
       btnClose.addEventListener('click', deleteAccount)
       btnLoan.addEventListener('click', requestLoan)
+      btnSort.addEventListener('click', sortMovments)
    }
 
 }
