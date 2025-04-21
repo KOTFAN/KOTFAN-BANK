@@ -75,10 +75,10 @@ let currentUser = undefined
 const displayMovements = function (movmentsArr) {
    containerMovements.innerHTML = ''
    movmentsArr.forEach((mov, i) => {
-      let movType = mov > 0 ? 'deposit' : 'withdrawal'
+      const movType = mov > 0 ? 'deposit' : 'withdrawal'
       containerMovements.insertAdjacentHTML("afterbegin",
          `<div class="movements__row">
-            <div class="movements__type movements__type--${movType}">${i + 1} deposit</div>
+            <div class="movements__type movements__type--${movType}">${i + 1} ${movType}</div>
             <div class="movements__value">${mov} $</div>
          </div>`)
    })
@@ -167,7 +167,6 @@ const MoneyTransfering = (e) => {
       sendTo.movements.push(sendAmong)
 
 
-      console.log("send " + sendAmong + ' to ' + sendTo.userName)
       updateUI(currentUser)
       clearFields(inputTransferTo, inputTransferAmount)
    }
@@ -187,6 +186,19 @@ const deleteAccount = (e) => {
    }
 
 }
+//requestLoanHandler
+const requestLoan = (e) => {
+   e.preventDefault();
+   const among = Number(inputLoanAmount.value)
+
+   if (among > 0 && currentUser.movements.some(mov => mov >= among * 0.1)) {
+      currentUser.movements.push(among)
+
+
+      updateUI(currentUser)
+      clearFields(inputLoanAmount)
+   }
+}
 
 const login = (e) => {
    e.preventDefault();
@@ -198,6 +210,7 @@ const login = (e) => {
    //clear all eventListeners exept login
    btnTransfer.removeEventListener('click', MoneyTransfering)
    btnClose.removeEventListener('click', deleteAccount)
+   btnLoan.removeEventListener('click', requestLoan)
 
    if (currentUser) {
       //user is logined so do...
@@ -206,10 +219,7 @@ const login = (e) => {
       //add event Listeners
       btnTransfer.addEventListener('click', MoneyTransfering)
       btnClose.addEventListener('click', deleteAccount)
-
-
-
-
+      btnLoan.addEventListener('click', requestLoan)
    }
 
 }
