@@ -8,6 +8,18 @@ const accounts = [
     interestRate: 1.2, // %
     pin: 1111,
     userName: "kotfan",
+    movementsDates: [
+      "2019-11-18T21:31:17.178Z",
+      "2019-12-23T07:42:02.383Z",
+      "2020-01-28T09:15:04.904Z",
+      "2020-04-01T10:17:24.185Z",
+      "2020-05-08T14:11:59.604Z",
+      "2020-05-27T17:01:17.194Z",
+      "2020-07-11T23:36:17.929Z",
+      "2020-07-12T10:51:36.790Z",
+    ],
+    currency: "USD",
+    locale: "en-US",
   },
   {
     owner: "Scrooge mak dak",
@@ -15,6 +27,18 @@ const accounts = [
     interestRate: 1.5,
     pin: 2222,
     userName: "smd",
+    movementsDates: [
+      "2019-11-18T21:31:17.178Z",
+      "2019-12-23T07:42:02.383Z",
+      "2020-01-28T09:15:04.904Z",
+      "2020-04-01T10:17:24.185Z",
+      "2020-05-08T14:11:59.604Z",
+      "2020-05-27T17:01:17.194Z",
+      "2020-07-11T23:36:17.929Z",
+      "2020-07-12T10:51:36.790Z",
+    ],
+    currency: "EUR",
+    locale: "pt-PT",
   },
   {
     owner: "Nami",
@@ -22,6 +46,18 @@ const accounts = [
     interestRate: 0.7,
     pin: 3333,
     userName: "moneyLover",
+    movementsDates: [
+      "2019-11-18T21:31:17.178Z",
+      "2019-12-23T07:42:02.383Z",
+      "2020-01-28T09:15:04.904Z",
+      "2020-04-01T10:17:24.185Z",
+      "2020-05-08T14:11:59.604Z",
+      "2020-05-27T17:01:17.194Z",
+      "2020-07-11T23:36:17.929Z",
+      "2020-07-12T10:51:36.790Z",
+    ],
+    currency: "GBP",
+    locale: "de-DE",
   },
   {
     owner: "Montgomery Burns",
@@ -29,15 +65,27 @@ const accounts = [
     interestRate: 1,
     pin: 4444,
     userName: "springfild228",
+    movementsDates: [
+      "2019-11-18T21:31:17.178Z",
+      "2019-12-23T07:42:02.383Z",
+      "2020-01-28T09:15:04.904Z",
+      "2020-04-01T10:17:24.185Z",
+      "2020-05-08T14:11:59.604Z",
+    ],
+    currency: "UAH",
+    locale: "ua-UK",
   },
 ];
-let currentUser = null;
+
+let currentUser = accounts[0]; //change to null
 let isSortOn = true;
 const currencies = new Map([
   ["USD", "United States dollar"],
   ["EUR", "Euro"],
   ["GBP", "Pound sterling"],
 ]);
+
+const currentDate = new Date();
 
 // Elements
 const labelWelcome = document.querySelector(".welcome");
@@ -66,21 +114,30 @@ const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 
 //====================display===========================
-const displayMovements = function (movmentsArr, isNeedToBeSort = false) {
-  const movements = isNeedToBeSort
-    ? movmentsArr.slice().sort((a, b) => a - b)
-    : movmentsArr;
+const displayMovements = function (currentUser = {}, isNeedToBeSort = false) {
+  const moneyTransfers = currentUser.movements.map((mov, i) => {
+    return { movAmong: mov, movDate: currentUser.movementsDates[i] };
+  });
+
+  console.log(moneyTransfers);
+
+  if (isNeedToBeSort) {
+    moneyTransfers.sort((a, b) => a.movAmong - b.movAmong);
+  }
 
   containerMovements.innerHTML = "";
-  movements.forEach((mov, i) => {
-    const movType = mov > 0 ? "deposit" : "withdrawal";
+  moneyTransfers.forEach(({ movAmong, movDate }, i) => {
+    const movType = movAmong > 0 ? "deposit" : "withdrawal";
+
+    const whenWasMovDate = movDate;
     containerMovements.insertAdjacentHTML(
       "afterbegin",
       `<div class="movements__row">
             <div class="movements__type movements__type--${movType}">${
         i + 1
       } ${movType}</div>
-            <div class="movements__value">${mov} $</div>
+            <div class="movements__date">${whenWasMovDate}</div>
+            <div class="movements__value">${movAmong} $</div>
          </div>`
     );
   });
@@ -127,9 +184,11 @@ const displayTotalInterest = function (movements = [], prosent = 0) {
 const sortMovments = (e) => {
   e.preventDefault();
 
-  displayMovements(currentUser.movements, isSortOn);
+  displayMovements(currentUser, isSortOn);
   isSortOn = !isSortOn;
 };
+
+const formatMovmentDate = (date) => {};
 //=======================================================================
 
 //clear fields and remove coursor from field
@@ -161,7 +220,7 @@ const hideUI = () => {
 //update ui after some action of current user
 const updateUI = (currentUser) => {
   displayUI(currentUser);
-  displayMovements(currentUser.movements);
+  displayMovements(currentUser);
 
   displayAndCalculateBalance(currentUser);
 
