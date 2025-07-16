@@ -13,10 +13,10 @@ const accounts = [
       "2019-12-23T07:42:02.383Z",
       "2020-01-28T09:15:04.904Z",
       "2020-04-01T10:17:24.185Z",
-      "2020-05-08T14:11:59.604Z",
-      "2020-05-27T17:01:17.194Z",
-      "2020-07-11T23:36:17.929Z",
-      "2020-07-12T10:51:36.790Z",
+      "2025-07-09T13:04:00.000Z", // 7 днів тому
+      "2025-07-13T13:04:00.000Z", // 3 дні тому
+      "2025-07-15T13:04:00.000Z", // вчора
+      "2025-07-16T13:04:00.000Z", // сьогодні
     ],
     currency: "USD",
     locale: "en-US",
@@ -85,8 +85,6 @@ const currencies = new Map([
   ["GBP", "Pound sterling"],
 ]);
 
-const currentDate = new Date();
-
 // Elements
 const labelWelcome = document.querySelector(".welcome");
 const labelDate = document.querySelector(".date");
@@ -116,10 +114,8 @@ const inputClosePin = document.querySelector(".form__input--pin");
 //====================display===========================
 const displayMovements = function (currentUser = {}, isNeedToBeSort = false) {
   const moneyTransfers = currentUser.movements.map((mov, i) => {
-    return { movAmong: mov, movDate: currentUser.movementsDates[i] };
+    return { movAmong: mov, movDate: new Date(currentUser.movementsDates[i]) };
   });
-
-  console.log(moneyTransfers);
 
   if (isNeedToBeSort) {
     moneyTransfers.sort((a, b) => a.movAmong - b.movAmong);
@@ -129,7 +125,7 @@ const displayMovements = function (currentUser = {}, isNeedToBeSort = false) {
   moneyTransfers.forEach(({ movAmong, movDate }, i) => {
     const movType = movAmong > 0 ? "deposit" : "withdrawal";
 
-    const whenWasMovDate = movDate;
+    const whenWasMovDate = formatMovmentDate(movDate);
     containerMovements.insertAdjacentHTML(
       "afterbegin",
       `<div class="movements__row">
@@ -188,7 +184,21 @@ const sortMovments = (e) => {
   isSortOn = !isSortOn;
 };
 
-const formatMovmentDate = (date) => {};
+const formatMovmentDate = (date) => {
+  const currentDate = new Date();
+  const dayDifference =
+    (currentDate.getTime() - date.getTime()) / (1000 * 60 * 60 * 24);
+  if (dayDifference < 1) {
+    return "Today";
+  }
+  if (dayDifference < 2) {
+    return "Yesterday";
+  }
+  if (dayDifference < 7) {
+    return `${Math.floor(dayDifference)} days ago`;
+  }
+  return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+};
 //=======================================================================
 
 //clear fields and remove coursor from field
@@ -246,7 +256,9 @@ const MoneyTransfering = (e) => {
     currentUser !== sendTo
   ) {
     currentUser.movements.push(-sendAmong);
+    currentUser.movementsDates.push(new Date().toISOString());
     sendTo.movements.push(sendAmong);
+    sendTo.movementsDates.push(new Date().toISOString());
 
     updateUI(currentUser);
     clearFields(inputTransferTo, inputTransferAmount);
@@ -260,6 +272,7 @@ const requestLoan = (e) => {
 
   if (among > 0 && currentUser.movements.some((mov) => mov >= among * 0.1)) {
     currentUser.movements.push(among);
+    currentUser.movementsDates.push(new Date().toISOString());
 
     updateUI(currentUser);
     clearFields(inputLoanAmount);
