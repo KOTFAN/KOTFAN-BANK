@@ -77,13 +77,14 @@ const accounts = [
   },
 ];
 
-let currentUser = accounts[0]; //change to null
+let currentUser = null; //change to null
 let isSortOn = true;
 const currencies = new Map([
   ["USD", "United States dollar"],
   ["EUR", "Euro"],
   ["GBP", "Pound sterling"],
 ]);
+let timer;
 
 // Elements
 const labelWelcome = document.querySelector(".welcome");
@@ -111,6 +112,7 @@ const inputLoanAmount = document.querySelector(".form__input--loan-amount");
 const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 const dateOnScrean = document.querySelector(".date");
+const timerOnScrean = document.querySelector(".timer");
 
 //====================display===========================
 const displayMovements = function (currentUser = {}, isNeedToBeSort = false) {
@@ -154,6 +156,7 @@ const displayUserName = function (name = "") {
   }
   return "Invalid name";
 };
+
 //===============================================
 
 //======================total-analitisc-and-sorting==================================================
@@ -231,6 +234,10 @@ const hideUI = () => {
   containerApp.style.opacity = 0;
   labelWelcome.textContent = "Log or sign up";
   containerApp.style.visibility = "hidden";
+  currentUser = null;
+  if (timer) {
+    clearInterval(timer);
+  }
 };
 //update ui after some action of current user
 const updateUI = (currentUser) => {
@@ -242,6 +249,32 @@ const updateUI = (currentUser) => {
   displayTotalIn(currentUser.movements);
   displayTotalOut(currentUser.movements);
   displayTotalInterest(currentUser.movements, currentUser.interestRate);
+
+  if (!timer) {
+    startTimer();
+  } else {
+    clearInterval(timer);
+    startTimer();
+  }
+};
+
+const startTimer = () => {
+  let secondsBeforeLogOut = 5 * 60;
+  function tick() {
+    const min = String(Math.floor(secondsBeforeLogOut / 60)).padStart(2, "0");
+    const sec = String(secondsBeforeLogOut % 60).padStart(2, "0");
+    timerOnScrean.textContent = `${min}:${sec}`;
+
+    if (secondsBeforeLogOut === 0) {
+      clearInterval(timer);
+      hideUI();
+    }
+
+    secondsBeforeLogOut = secondsBeforeLogOut - 1;
+  }
+
+  tick();
+  timer = setInterval(tick, 1000);
 };
 //=============================================================
 
@@ -312,7 +345,6 @@ const login = (e) => {
       acc.userName === inputLoginUsername.value &&
       acc.pin === Number(inputLoginPin.value)
   );
-  hideUI();
 
   //clear all eventListeners exept login
   btnTransfer.removeEventListener("click", MoneyTransfering);
@@ -332,6 +364,8 @@ const login = (e) => {
     btnClose.addEventListener("click", deleteAccount);
     btnLoan.addEventListener("click", requestLoan);
     btnSort.addEventListener("click", sortMovments);
+  } else {
+    hideUI();
   }
 };
 
