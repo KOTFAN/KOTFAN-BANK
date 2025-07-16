@@ -110,6 +110,7 @@ const inputTransferAmount = document.querySelector(".form__input--amount");
 const inputLoanAmount = document.querySelector(".form__input--loan-amount");
 const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
+const dateOnScrean = document.querySelector(".date");
 
 //====================display===========================
 const displayMovements = function (currentUser = {}, isNeedToBeSort = false) {
@@ -184,6 +185,10 @@ const sortMovments = (e) => {
   isSortOn = !isSortOn;
 };
 
+const formatDateAsDayMonthYear = (date) => {
+  return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+};
+
 const formatMovmentDate = (date) => {
   const currentDate = new Date();
   const dayDifference =
@@ -197,7 +202,7 @@ const formatMovmentDate = (date) => {
   if (dayDifference < 7) {
     return `${Math.floor(dayDifference)} days ago`;
   }
-  return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+  return formatDateAsDayMonthYear(date);
 };
 //=======================================================================
 
@@ -314,6 +319,9 @@ const login = (e) => {
   btnClose.removeEventListener("click", deleteAccount);
   btnLoan.removeEventListener("click", requestLoan);
   btnSort.removeEventListener("click", sortMovments);
+
+  //display date
+  dateOnScrean.textContent = formatDateAsDayMonthYear(new Date());
 
   if (currentUser) {
     //user is logined so do...
