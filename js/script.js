@@ -1,6 +1,6 @@
 "use strict";
 
-// Data
+// state
 const accounts = [
   {
     owner: "KOTFAN",
@@ -31,6 +31,13 @@ const accounts = [
     userName: "springfild228",
   },
 ];
+let currentUser = null;
+let isSortOn = true;
+const currencies = new Map([
+  ["USD", "United States dollar"],
+  ["EUR", "Euro"],
+  ["GBP", "Pound sterling"],
+]);
 
 // Elements
 const labelWelcome = document.querySelector(".welcome");
@@ -58,15 +65,7 @@ const inputLoanAmount = document.querySelector(".form__input--loan-amount");
 const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 
-const currencies = new Map([
-  ["USD", "United States dollar"],
-  ["EUR", "Euro"],
-  ["GBP", "Pound sterling"],
-]);
-
-let currentUser;
-
-//display money moments as list
+//====================display===========================
 const displayMovements = function (movmentsArr, isNeedToBeSort = false) {
   const movements = isNeedToBeSort
     ? movmentsArr.slice().sort((a, b) => a - b)
@@ -101,7 +100,9 @@ const displayUserName = function (name = "") {
   }
   return "Invalid name";
 };
+//===============================================
 
+//======================total-analitisc-and-sorting==================================================
 const displayTotalIn = function (movements = []) {
   labelSumIn.textContent = movements
     .filter((num) => num > 0)
@@ -122,6 +123,15 @@ const displayTotalInterest = function (movements = [], prosent = 0) {
     .toFixed(2);
 };
 
+//sortMovmentsHandler
+const sortMovments = (e) => {
+  e.preventDefault();
+
+  displayMovements(currentUser.movements, isSortOn);
+  isSortOn = !isSortOn;
+};
+//=======================================================================
+
 //clear fields and remove coursor from field
 const clearFields = (...fields) => {
   fields.forEach((field) => {
@@ -130,6 +140,7 @@ const clearFields = (...fields) => {
   });
 };
 
+//===================UI-changes=================================
 //show ui after login
 const displayUI = ({ owner }) => {
   containerApp.style.opacity = 1;
@@ -158,7 +169,9 @@ const updateUI = (currentUser) => {
   displayTotalOut(currentUser.movements);
   displayTotalInterest(currentUser.movements, currentUser.interestRate);
 };
+//=============================================================
 
+//=====================left-3-fields============================
 //MoneyTransferingHendler
 const MoneyTransfering = (e) => {
   e.preventDefault();
@@ -181,6 +194,19 @@ const MoneyTransfering = (e) => {
   }
 };
 
+//requestLoanHandler
+const requestLoan = (e) => {
+  e.preventDefault();
+  const among = Number(inputLoanAmount.value);
+
+  if (among > 0 && currentUser.movements.some((mov) => mov >= among * 0.1)) {
+    currentUser.movements.push(among);
+
+    updateUI(currentUser);
+    clearFields(inputLoanAmount);
+  }
+};
+
 //deleteAccountHandler
 const deleteAccount = (e) => {
   e.preventDefault();
@@ -200,26 +226,7 @@ const deleteAccount = (e) => {
     hideUI();
   }
 };
-//requestLoanHandler
-const requestLoan = (e) => {
-  e.preventDefault();
-  const among = Number(inputLoanAmount.value);
-
-  if (among > 0 && currentUser.movements.some((mov) => mov >= among * 0.1)) {
-    currentUser.movements.push(among);
-
-    updateUI(currentUser);
-    clearFields(inputLoanAmount);
-  }
-};
-//sortMovmentsHandler
-let isSortOn = true;
-const sortMovments = (e) => {
-  e.preventDefault();
-
-  displayMovements(currentUser.movements, isSortOn);
-  isSortOn = !isSortOn;
-};
+//=========================================================================
 
 const login = (e) => {
   e.preventDefault();
