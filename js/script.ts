@@ -193,10 +193,11 @@ const displayUserName = function (name: string): string {
 //===============================================
 
 //======================total-analitisc-and-sorting==================================================
-const displayTotalIn = function (movements = []) {
-  labelSumIn.textContent = movements
-    .filter((num) => num > 0)
-    .reduce((a, v) => a + v);
+const displayTotalIn = function (movements: number[]): void {
+  if (labelSumIn) {
+    const totalIn = movements.filter((num) => num > 0).reduce((a, v) => a + v);
+    labelSumIn.textContent = String(totalIn);
+  }
 };
 
 const displayTotalOut = function (movements = []) {
