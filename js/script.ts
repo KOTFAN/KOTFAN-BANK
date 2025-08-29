@@ -256,7 +256,7 @@ const formatMovmentDate = (date: Date): string => {
 //=======================================================================
 
 //clear fields and remove coursor from field
-const clearFields = (...fields) => {
+const clearFields = (...fields: HTMLInputElement[]): void => {
   fields.forEach((field) => {
     field.value = "";
     field.blur();
