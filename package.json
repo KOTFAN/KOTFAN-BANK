@@ -8,5 +8,8 @@
   },
   "author": "KOTFAN",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  }
 }
