@@ -178,12 +178,14 @@ const displayAndCalculateBalance = function (acc: Account): void {
   }
 };
 
-const displayUserName = function (name = "") {
-  if (name.length && typeof name === "string") {
-    const userFristName = name.split(" ")[0];
-    return (
-      userFristName[0].toUpperCase() + userFristName.slice(1).toLowerCase()
-    );
+const displayUserName = function (name: string): string {
+  if (name.length) {
+    const userFristName = name.split(" ")[0]; //wtf its can't be undefined
+    if (userFristName) {
+      return (
+        userFristName[0]?.toUpperCase() + userFristName.slice(1).toLowerCase()
+      );
+    }
   }
   return "Invalid name";
 };
