@@ -200,10 +200,13 @@ const displayTotalIn = function (movements: number[]): void {
   }
 };
 
-const displayTotalOut = function (movements = []) {
-  labelSumOut.textContent = Math.abs(
-    movements.filter((num) => num < 0).reduce((a, v) => a + v)
-  );
+const displayTotalOut = function (movements: number[]): void {
+  if (labelSumOut) {
+    const totalOut = Math.abs(
+      movements.filter((num) => num < 0).reduce((a, v) => a + v)
+    );
+    labelSumOut.textContent = String(totalOut);
+  }
 };
 
 const displayTotalInterest = function (movements = [], prosent = 0) {
