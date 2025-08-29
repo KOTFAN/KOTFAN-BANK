@@ -7,19 +7,19 @@ type ISO8601DateString =
   `${number}-${number}-${number}T${number}:${number}:${number}.${number}Z`;
 
 interface Account {
-  owner: String;
-  movements: Number[];
-  interestRate: Number;
-  pin: Number;
-  userName: String;
+  owner: string;
+  movements: number[];
+  interestRate: number;
+  pin: number;
+  userName: string;
   movementsDates: ISO8601DateString[];
   currency: Сurrency;
   locale: Locale;
 }
 
 interface MoneyTransfer {
-  movAmong: Number;
-  movDate: Number;
+  movAmong: number;
+  movDate: number;
 }
 
 // state
@@ -100,9 +100,8 @@ const accounts: Account[] = [
 ];
 
 let currentUser: null | Account = null;
-let isSortOn: Boolean = true;
-
-let timer: undefined | Number;
+let isSortOn: boolean = true;
+let timer: undefined | number;
 
 // Elements
 const labelWelcome = document.querySelector(".welcome");
