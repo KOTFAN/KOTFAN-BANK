@@ -14,12 +14,13 @@ interface Account {
   userName: string;
   movementsDates: ISO8601DateString[];
   currency: Сurrency;
+  balance?: number;
   locale: Locale;
 }
 
 interface MoneyTransfer {
   movAmong: number;
-  movDate: number;
+  movDate: Date;
 }
 
 // state
@@ -136,9 +137,17 @@ const displayMovements = function (
   currentUser: Account,
   isNeedToBeSort = false
 ) {
-  const moneyTransfers = currentUser.movements.map((mov, i) => {
-    return { movAmong: mov, movDate: new Date(currentUser.movementsDates[i]) };
-  });
+  if (currentUser === null) {
+    throw new Error("No User");
+  }
+  const moneyTransfers: MoneyTransfer[] = currentUser.movements.map(
+    (mov, i) => {
+      return {
+        movAmong: mov,
+        movDate: new Date(currentUser.movementsDates[i]),
+      };
+    }
+  );
 
   if (isNeedToBeSort) {
     moneyTransfers.sort((a, b) => a.movAmong - b.movAmong);
@@ -162,9 +171,11 @@ const displayMovements = function (
   });
 };
 
-const displayAndCalculateBalance = function (acc) {
+const displayAndCalculateBalance = function (acc: Account): void {
   acc.balance = acc.movements.reduce((a, v) => a + v, 0);
-  labelBalance.textContent = `${acc.balance} $`;
+  if (labelBalance) {
+    labelBalance.textContent = `${acc.balance} $`;
+  }
 };
 
 const displayUserName = function (name = "") {
