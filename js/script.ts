@@ -209,12 +209,19 @@ const displayTotalOut = function (movements: number[]): void {
   }
 };
 
-const displayTotalInterest = function (movements = [], prosent = 0) {
-  labelSumInterest.textContent = movements
-    .filter((num) => num > 0)
-    .map((mov) => (mov * prosent) / 100)
-    .reduce((a, v) => a + v)
-    .toFixed(2);
+const displayTotalInterest = function (
+  movements: number[],
+  prosent: number
+): void {
+  if (labelSumInterest) {
+    const totlaInterest = movements
+      .filter((num) => num > 0)
+      .map((mov) => (mov * prosent) / 100)
+      .reduce((a, v) => a + v)
+      .toFixed(2);
+
+    labelSumInterest.textContent = String(totlaInterest);
+  }
 };
 
 //sortMovmentsHandler
