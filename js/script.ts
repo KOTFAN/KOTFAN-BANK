@@ -1,6 +1,8 @@
 "use strict";
 //types
 
+type currency = "UAH" | "GBP" | "EUR" | "USD";
+
 interface Account {
   owner: String;
   movements: Number[];
@@ -8,7 +10,7 @@ interface Account {
   pin: Number;
   userName: String;
   movementsDates: String[];
-  currency: String;
+  currency: currency;
   locale: String;
 }
 
