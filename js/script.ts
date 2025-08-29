@@ -105,32 +105,49 @@ let isSortOn: boolean = true;
 let timer: undefined | number;
 
 // Elements
-const labelWelcome = document.querySelector(".welcome");
-const labelDate = document.querySelector(".date");
-const labelBalance = document.querySelector(".balance__value");
-const labelSumIn = document.querySelector(".summary__value--in");
-const labelSumOut = document.querySelector(".summary__value--out");
-const labelSumInterest = document.querySelector(".summary__value--interest");
-const labelTimer = document.querySelector(".timer");
+const labelWelcome = document.querySelector<HTMLParagraphElement>(".welcome");
+const labelBalance =
+  document.querySelector<HTMLParagraphElement>(".balance__value");
+const labelSumIn = document.querySelector<HTMLParagraphElement>(
+  ".summary__value--in"
+);
+const labelSumOut = document.querySelector<HTMLParagraphElement>(
+  ".summary__value--out"
+);
+const labelSumInterest = document.querySelector<HTMLParagraphElement>(
+  ".summary__value--interest"
+);
+const labelTimer = document.querySelector<HTMLSpanElement>(".timer");
+const dateOnScrean = document.querySelector<HTMLSpanElement>(".date");
 
-const containerApp = document.querySelector(".app");
-const containerMovements = document.querySelector(".movements");
+const containerApp = document.querySelector<HTMLElement>(".app"); //its main
+const containerMovements = document.querySelector<HTMLDivElement>(".movements");
 
-const btnLogin = document.querySelector(".login__btn");
-const btnTransfer = document.querySelector(".form__btn--transfer");
-const btnLoan = document.querySelector(".form__btn--loan");
-const btnClose = document.querySelector(".form__btn--close");
-const btnSort = document.querySelector(".btn--sort");
+const btnLogin = document.querySelector<HTMLButtonElement>(".login__btn");
+const btnTransfer = document.querySelector<HTMLButtonElement>(
+  ".form__btn--transfer"
+);
+const btnLoan = document.querySelector<HTMLButtonElement>(".form__btn--loan");
+const btnClose = document.querySelector<HTMLButtonElement>(".form__btn--close");
+const btnSort = document.querySelector<HTMLButtonElement>(".btn--sort");
 
-const inputLoginUsername = document.querySelector(".login__input--user");
-const inputLoginPin = document.querySelector(".login__input--pin");
-const inputTransferTo = document.querySelector(".form__input--to");
-const inputTransferAmount = document.querySelector(".form__input--amount");
-const inputLoanAmount = document.querySelector(".form__input--loan-amount");
-const inputCloseUsername = document.querySelector(".form__input--user");
-const inputClosePin = document.querySelector(".form__input--pin");
-const dateOnScrean = document.querySelector(".date");
-const timerOnScrean = document.querySelector(".timer");
+const inputLoginUsername = document.querySelector<HTMLInputElement>(
+  ".login__input--user"
+);
+const inputLoginPin =
+  document.querySelector<HTMLInputElement>(".login__input--pin");
+const inputTransferTo =
+  document.querySelector<HTMLInputElement>(".form__input--to");
+const inputTransferAmount = document.querySelector<HTMLInputElement>(
+  ".form__input--amount"
+);
+const inputLoanAmount = document.querySelector<HTMLInputElement>(
+  ".form__input--loan-amount"
+);
+const inputCloseUsername =
+  document.querySelector<HTMLInputElement>(".form__input--user");
+const inputClosePin =
+  document.querySelector<HTMLInputElement>(".form__input--pin");
 
 //====================display===========================
 const displayMovements = function (
