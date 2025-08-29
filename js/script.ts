@@ -153,39 +153,47 @@ const inputClosePin =
 const displayMovements = function (
   currentUser: Account,
   isNeedToBeSort = false
-) {
+): void {
   if (currentUser === null) {
     throw new Error("No User");
   }
-  const moneyTransfers: MoneyTransfer[] = currentUser.movements.map(
-    (mov, i) => {
-      return {
-        movAmong: mov,
-        movDate: new Date(currentUser.movementsDates[i]),
-      };
-    }
-  );
-
-  if (isNeedToBeSort) {
-    moneyTransfers.sort((a, b) => a.movAmong - b.movAmong);
-  }
-
-  containerMovements.innerHTML = "";
-  moneyTransfers.forEach(({ movAmong, movDate }, i) => {
-    const movType = movAmong > 0 ? "deposit" : "withdrawal";
-
-    const whenWasMovDate = formatMovmentDate(movDate);
-    containerMovements.insertAdjacentHTML(
-      "afterbegin",
-      `<div class="movements__row">
-            <div class="movements__type movements__type--${movType}">${
-        i + 1
-      } ${movType}</div>
-            <div class="movements__date">${whenWasMovDate}</div>
-            <div class="movements__value">${movAmong} $</div>
-         </div>`
+  if (
+    containerMovements &&
+    currentUser.movementsDates.length === currentUser.movements.length
+  ) {
+    const moneyTransfers: MoneyTransfer[] = currentUser.movements.map(
+      (mov, i) => {
+        const movDate = currentUser.movementsDates[i];
+        if (!movDate) throw new Error("No data");
+        return {
+          movAmong: mov,
+          movDate: new Date(movDate),
+        };
+      }
     );
-  });
+
+    if (isNeedToBeSort) {
+      moneyTransfers.sort((a, b) => a.movAmong - b.movAmong);
+    }
+
+    containerMovements.innerHTML = "";
+
+    moneyTransfers.forEach(({ movAmong, movDate }, i) => {
+      const movType = movAmong > 0 ? "deposit" : "withdrawal";
+
+      const whenWasMovDate = formatMovmentDate(movDate);
+      containerMovements.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="movements__row">
+             <div class="movements__type movements__type--${movType}">${
+          i + 1
+        } ${movType}</div>
+             <div class="movements__date">${whenWasMovDate}</div>
+             <div class="movements__value">${movAmong} $</div>
+          </div>`
+      );
+    });
+  }
 };
 
 const displayAndCalculateBalance = function (acc: Account): void {
