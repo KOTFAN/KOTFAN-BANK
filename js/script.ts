@@ -234,7 +234,7 @@ const sortMovments = (e: Event): void => {
   }
 };
 
-const formatDateAsDayMonthYear = (date) => {
+const formatDateAsDayMonthYear = (date: Date): string => {
   return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 };
 
