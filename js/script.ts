@@ -1,7 +1,10 @@
 "use strict";
 //types
 
-type currency = "UAH" | "GBP" | "EUR" | "USD";
+type Сurrency = "UAH" | "GBP" | "EUR" | "USD";
+type Locale = "ua-Uk" | "pt-PT" | "de-DE" | "en-US";
+type ISO8601DateString =
+  `${number}-${number}-${number}T${number}:${number}:${number}.${number}Z`;
 
 interface Account {
   owner: String;
@@ -9,9 +12,14 @@ interface Account {
   interestRate: Number;
   pin: Number;
   userName: String;
-  movementsDates: String[];
-  currency: currency;
-  locale: String;
+  movementsDates: ISO8601DateString[];
+  currency: Сurrency;
+  locale: Locale;
+}
+
+interface MoneyTransfer {
+  movAmong: Number;
+  movDate: Number;
 }
 
 // state
@@ -27,10 +35,10 @@ const accounts: Account[] = [
       "2019-12-23T07:42:02.383Z",
       "2020-01-28T09:15:04.904Z",
       "2020-04-01T10:17:24.185Z",
-      "2025-07-09T13:04:00.000Z", // 7 днів тому
-      "2025-07-13T13:04:00.000Z", // 3 дні тому
-      "2025-07-15T13:04:00.000Z", // вчора
-      "2025-07-16T13:04:00.000Z", // сьогодні
+      "2025-07-09T13:04:00.000Z",
+      "2025-07-13T13:04:00.000Z",
+      "2025-07-15T13:04:00.000Z",
+      "2025-07-16T13:04:00.000Z",
     ],
     currency: "USD",
     locale: "en-US",
@@ -87,18 +95,14 @@ const accounts: Account[] = [
       "2020-05-08T14:11:59.604Z",
     ],
     currency: "UAH",
-    locale: "ua-UK",
+    locale: "ua-Uk",
   },
 ];
 
 let currentUser: null | Account = null;
-let isSortOn = true;
-const currencies = new Map([
-  ["USD", "United States dollar"],
-  ["EUR", "Euro"],
-  ["GBP", "Pound sterling"],
-]);
-let timer;
+let isSortOn: Boolean = true;
+
+let timer: undefined | Number;
 
 // Elements
 const labelWelcome = document.querySelector(".welcome");
@@ -129,7 +133,10 @@ const dateOnScrean = document.querySelector(".date");
 const timerOnScrean = document.querySelector(".timer");
 
 //====================display===========================
-const displayMovements = function (currentUser = {}, isNeedToBeSort = false) {
+const displayMovements = function (
+  currentUser: Account,
+  isNeedToBeSort = false
+) {
   const moneyTransfers = currentUser.movements.map((mov, i) => {
     return { movAmong: mov, movDate: new Date(currentUser.movementsDates[i]) };
   });
