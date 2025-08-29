@@ -225,11 +225,13 @@ const displayTotalInterest = function (
 };
 
 //sortMovmentsHandler
-const sortMovments = (e) => {
+const sortMovments = (e: Event): void => {
   e.preventDefault();
 
-  displayMovements(currentUser, isSortOn);
-  isSortOn = !isSortOn;
+  if (currentUser) {
+    displayMovements(currentUser, isSortOn);
+    isSortOn = !isSortOn;
+  }
 };
 
 const formatDateAsDayMonthYear = (date) => {
