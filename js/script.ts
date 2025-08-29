@@ -238,7 +238,7 @@ const formatDateAsDayMonthYear = (date: Date): string => {
   return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 };
 
-const formatMovmentDate = (date) => {
+const formatMovmentDate = (date: Date): string => {
   const currentDate = new Date();
   const dayDifference =
     (currentDate.getTime() - date.getTime()) / (1000 * 60 * 60 * 24);
